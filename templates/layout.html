@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+<style>
+body {
+  background-color: rgba(111, 209, 255, 0.082);
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: navy;
+  outline-width: 2px;
+  border: 2px solid #020202;
+}
+
+.topnav a {
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: rgba(155, 180, 255, 0.897);
+  color: black;
+}
+
+.topnav a.active {
+  color: #61917f;
+}
+
+.button {
+  background-color: rgba(91, 218, 91, 0); 
+  border: none;
+  color: black;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+}
+
+
+
+.button:hover{
+  background-color: lightgray;
+  color: black;
+}
+
+.button2 {
+  background-color: whitesmoke; 
+  border: black solid 1px;
+  border-radius: 2px;
+  color: black;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+}
+
+
+
+.button2:hover{
+  background-color: rgb(86, 216, 69);
+  color: black;
+}
+
+
+
+</style>
+</head>
+<body>
+ 
+<div class="topnav">
+  <a href="/">Contact-books</a>
+  <a href="/home">Home</a>
+  <a href="/logout">Logout</a>
+  
+</div>
+
+<div style="padding-left:16px">
+  {% block content %} {% endblock %}
+</div>
+
+</body>
+</html>
