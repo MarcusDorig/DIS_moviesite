@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% block content %}
+<html>
+  <head>
+  <style>
+    input[type=submit]{
+      width: 65%;
+      padding: 12px 20px;
+      margin: 8px 18%;
+      border-radius: 2px;
+      border: black;
+      background-color: rgb(253, 237, 13);
+      color: black;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: medium;
+      font-weight: bold;
+    }
+
+    input[type=text]{
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type=password]{
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .login{
+      width: 50%;
+      border-radius: 5px;
+      background-color: gainsboro;
+      padding: 20px;
+      margin-top: 10%;
+      margin-left: 20%;
+    }
+
+  </style>
+  </head>
+
+  <body>
+    <div class="login">
+      <form action = "" method = "POST">
+        <label for="nm"> Username</label>
+        <input type="text" name="nm" placeholder="Martie_Movie.."/>
+        <label for="pw"> Password </label>
+        <input type="password" name="pw" placeholder="1234.."/>
+        <input type="submit" value="Sign in" name="login"/>
+        <input type="submit" value="Sign up" name="logon">
+      </form>
+    </div>
+
+  </body>
+</html>
+{% endblock content %}

@@ -4,16 +4,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
 <style>
 body {
-  background-color: rgba(111, 209, 255, 0.082);
+  background-color: rgba(254, 225, 157, 0.082);
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .topnav {
   overflow: hidden;
-  background-color: navy;
+  background-color: rgb(70, 178, 7);
   outline-width: 2px;
-  border: 2px solid #020202;
+  border: none;
 }
 
 .topnav a {
@@ -26,13 +26,18 @@ body {
 }
 
 .topnav a:hover {
-  background-color: rgba(155, 180, 255, 0.897);
+  background-color: rgba(173, 255, 155, 0.897);
   color: black;
 }
 
 .topnav a.active {
   color: #61917f;
 }
+
+.topnav a.split{
+  float: right;
+}
+
 
 .button {
   background-color: rgba(91, 218, 91, 0); 
@@ -77,12 +82,20 @@ body {
 </head>
 <body>
  
-<div class="topnav">
-  <a href="/">Contact-books</a>
-  <a href="/home">Home</a>
-  <a href="/logout">Logout</a>
-  
-</div>
+{% if id%}
+  <div class="topnav">
+    <a href="/home">Home</a>
+    <a href="/logout" class="split">Logout</a>
+  </div>
+
+{% else %}
+  <div class="topnav">
+    <a href="/home">Home</a>
+    <a href="/login" class="split">Sign in</a>
+  </div>
+
+{% endif %}
+
 
 <div style="padding-left:16px">
   {% block content %} {% endblock %}
