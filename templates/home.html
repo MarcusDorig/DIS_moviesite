@@ -1,6 +1,31 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h1>Its the homepage</h1>
+
+<html>
+  <head>
+    <style>
+      
+    </style>
+  </head>
+</html>
+
+
+
+{% if id %}
+  <h1>Favorite list</h1>
+
+  <h2>New movies</h2>
+
+  <h3>Highest rated movies</h3>
+
+{%else%}
+  <h2>New movies</h2>
+
+  <h3>Highest rated movies</h3>
+
+{% endif%}
+
+
 
 {% endblock content %}

@@ -9,7 +9,7 @@
       margin: 8px 18%;
       border-radius: 2px;
       border: black;
-      background-color: rgb(253, 237, 13);
+      background-color: rgb(255, 244, 86);
       color: black;
       font-family: Arial, Helvetica, sans-serif;
       font-size: medium;
@@ -36,6 +36,11 @@
       box-sizing: border-box;
     }
 
+    input[type=submit]:hover{
+      background-color: rgb(255, 239, 10);
+      /* border: 1px solid black; */
+    }
+
     .login{
       width: 50%;
       border-radius: 5px;
@@ -54,11 +59,21 @@
         <label for="nm"> Username</label>
         <input type="text" name="nm" placeholder="Martie_Movie.."/>
         <label for="pw"> Password </label>
-        <input type="password" name="pw" placeholder="1234.."/>
+        <input type="text" name="pw" placeholder="1234.."/>
         <input type="submit" value="Sign in" name="login"/>
         <input type="submit" value="Sign up" name="logon">
       </form>
     </div>
+
+    {% if a %}
+      <script> alert("Username already taken, try another") </script>
+    {% endif %}
+    {% if b %}
+      <script> alert("No user found. Username or password incorrect") </script>
+    {% endif %}
+    {% if c %}
+      <script> alert("You need to give both a username and password") </script>
+    {% endif %}
 
   </body>
 </html>

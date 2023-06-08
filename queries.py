@@ -19,12 +19,14 @@ class Queries:
         return lst
     
 
+
     def addUser(self, user, password):
-        lst = self.lookupUser(user, password)
+        cur = self.connect.cursor()
+        cur.execute("""SELECT * FROM Users WHERE Username=%s""",(user,))
+        lst = cur.fetchall()
         if len(lst) > 0:
             return 0
         else:
-          cur = self.connect.cursor()
           cur.execute("INSERT INTO Users VALUES (%s,%s)",(user, password))
           self.connect.commit()
           cur.close()

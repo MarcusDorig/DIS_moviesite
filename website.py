@@ -22,28 +22,26 @@ def login():
     if request.method == 'POST':
         uname = request.form.get('nm')
         pword = request.form.get('pw')
+        print(uname)
+        print(pword)
 
-        if (request.form.get('logon') == 'Sign up' and uname != None and pword != None):
+        if (request.form.get('logon') == 'Sign up' and uname != "" and pword != ""):
             match query.addUser(uname, pword):
                 case 0:
-                    print('Username already taken')
-                    return render_template("login.html")
+                    return render_template("login.html", a=1)
                 case 1:
-                    print('New user added')
+                    session['ID'] = uname
                     return redirect(url_for('homepage'))
-        elif (request.form.get('login') == 'Sign in' and uname != None and pword != None):
-            print('A user wants to log in')
+        elif (request.form.get('login') == 'Sign in' and uname != "" and pword != ""):
             lst = query.lookupUser(uname, pword)
             match len(lst):
                 case 0:
-                    print('Could not find, username or password incorrect')
-                    return render_template('login.html')
+                    return render_template('login.html', b=1)
                 case 1:
                     session['ID'] = uname
                     return redirect(url_for('homepage'))
         else:
-            print('Username or password not given')
-            return render_template("login.html")
+            return render_template("login.html", c=1)
     else:    
         return render_template("login.html")
 
