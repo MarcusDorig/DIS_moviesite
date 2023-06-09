@@ -5,10 +5,30 @@
 <html>
   <head>
     <style>
+      table, th, td{
+        width: 25%;
+        border: 2px solid;
+        border-collapse: collapse;
+      }
+
+      th{
+        background-color: grey;
+        border: 2px black;
+        height: 1cm;
+      }
+
+      table{
+        position: absolute;
+        padding-left: 60%;
+        padding-top: 20%;
+      }
+
 
     </style>
   </head>
-</html>
+
+<body>
+  
 
 
 
@@ -20,7 +40,8 @@
   <h3>Highest rated movies</h3>
 
 {%else%}
-  <table style="width: 35%; border: 1px solid black; background-color: white; ">
+
+  <table>
     <tr>
       <th>
         New releases
@@ -28,20 +49,24 @@
     </tr>
     {% for title, genres, date in newm %}
     <tr>
-      <th>
+      <td>
         <form action="" method="post">
-            <button style="cursor: pointer;" class="button" type="submit" name="newmovie" value={{TID}}>{{ title }} {{date}}</button>
+            <button style="cursor: pointer; width: 100%;" type="submit" name="newmovie" value={{TID}}>
+              {{ title }}  <br /> {{genres}}
+            </button>
         </form>
-      </th>
+      </td>
     </tr>
     {% endfor %}
   </table>
 
 
-  <h3>Highest rated movies</h3>
+  <h3 style="padding-left: 5%;">Highest rated movies</h3>
 
 {% endif%}
 
 
 
 {% endblock content %}
+</body>
+</html>

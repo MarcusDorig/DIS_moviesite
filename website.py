@@ -8,9 +8,23 @@ app = Flask(__name__)
 app.secret_key = 'imdb'
 
 @app.route('/', methods=['GET','POST'])
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/home", methods=['GET', 'POST']) 
 def homepage():
     lst = query.newestMovies()
+    for x in range(len(lst)):
+        g = list(lst[x])
+        gval = ''
+        gs = g[1]
+        while 1:
+            start = gs.find(': ""')+4
+            stop = gs.find('""}')
+            if stop==-1:
+                break
+            gval += gs[start:stop] + ', '
+            gs = gs[stop+4:]
+        g[1] = gval
+        lst[x] = tuple(g)
+    print(lst[3][1])
     if 'ID' in session:
         id = session['ID']
         return render_template("home.html", id=id)
