@@ -53,5 +53,5 @@ def logout():
 
 
 
-app.run(debug=True)
-# query.ResetDB()
+# app.run(debug=True)
+query.ResetDB()
