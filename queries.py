@@ -9,9 +9,7 @@ class Queries:
     def __init__(self):
         self.connect = psycopg2.connect("dbname='moviedb' user='postgres' host='localhost' password='Yvk89wkd'")
 
-    def ResetDB(self):
-        cur = self.connect.cursor()
-        cur.execute(open('Schemas.sql', 'r').read())
+    def clean_data(self):
         data = pd.read_csv(open("C:/Users/marcu/OneDrive/Dokumenter/Datalogi/DIS/moviedata2/tmdb_5000_movies.csv", encoding='utf8'), 
                                delimiter=',')
         data.drop('homepage', inplace=True, axis=1)
@@ -26,9 +24,19 @@ class Queries:
         data.drop('tagline', inplace=True, axis=1)
         data.drop('vote_average', inplace=True, axis=1)
         data.drop('vote_count', inplace=True, axis=1)
-        data.to_csv('moviedata_cleaned', sep=',', index_label='id')
-        
+        data.drop('title', inplace=True, axis=1)
+        data.to_csv('moviedata_cleaned', sep=';', index_label='id')
+
+    def ResetDB(self):
+        cur = self.connect.cursor()
+        cur.execute(open('Schemas.sql', 'r').read())
         cur.close()
+        cur2 = self.connect.cursor()
+        with open('moviedata_cleaned', 'r', encoding='utf8') as f:
+            next(f)
+            cur2.copy_from(f, 'movies', sep=';')
+        self.connect.commit()
+        cur2.close()
 
     
 
@@ -55,9 +63,7 @@ class Queries:
     
     def lookupMovie(self, budget, genre, original_language, title, release_date, revenue, runtime, id):
         cur = self.connect.cursor()
-        cur.execute("""SELECT * FROM Movies 
-        WHERE budget=%s AND genre=%s AND original_language=%s AND title=%s AND release_date=%s AND revenue=%s AND runtime=%s AND id=%s"""
-                    ,(budget, genre, original_language, title, release_date, revenue, runtime, id))
+        cur.execute("""SELECT * FROM Movies""")
         lst = cur.fetchall()
         cur.close()
         return lst
@@ -89,15 +95,24 @@ class Queries:
 
     def lookupFavorites(self, u_id):
         cur = self.connect.cursor()
-        cur.execute("""SELECT * FROM Movies WHERE 
-        Movie.ID = (SELECT M_id FROM Favorites WHERE u_id=%s)""", (u_id))
+        cur.execute("""SELECT * FROM Movies 
+                     INNER JOIN FAVORITES ON Movies.ID=(SELECT M_id FROM Favorites WHERE u_id=%s)""", (u_id))
         lst = cur.fetchall()
         cur.close()
         return lst
 
     def deleteFavorite(self, u_id, m_id):
         cur = self.connect.cursor()
-        cur.execute("""DELETE FROM Favorites WHERE u_id=%s AND m_id=%s""",(u_id, m_id))
+        cur.execute("DELETE FROM Favorites WHERE u_id=%s AND m_id=%s",(u_id, m_id))
         self.connect.commit()
         cur.close()
+
+    def newestMovies(self):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT title,genre,release_date FROM Movies
+        ORDER BY release_date DESC
+        FETCH FIRST 15 ROWS ONLY""")
+        lst = cur.fetchall()
+        cur.close()
+        return lst
 

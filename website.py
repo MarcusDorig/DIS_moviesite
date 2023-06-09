@@ -10,11 +10,14 @@ app.secret_key = 'imdb'
 @app.route('/', methods=['GET','POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def homepage():
+    lst = query.newestMovies()
     if 'ID' in session:
         id = session['ID']
         return render_template("home.html", id=id)
     else:
-        return render_template("home.html")
+        return render_template("home.html", newm=lst)
+
+
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -53,5 +56,6 @@ def logout():
 
 
 
-# app.run(debug=True)
-query.ResetDB()
+app.run(debug=True)
+# query.ResetDB()
+# query.clean_data()

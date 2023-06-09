@@ -11,14 +11,14 @@ CREATE TABLE Users(
 );
 
 CREATE TABLE Movies(
-  Budget INT,
+  ID INT,
+  Budget BIGINT,
   Genre TEXT,
   original_language TEXT,
   Title VARCHAR(255),
   release_date DATE,
-  Revenue INT,
-  Runtime INT,
-  ID INT,
+  Revenue BIGINT,
+  Runtime FLOAT,
   PRIMARY KEY(ID)
 );
 
