@@ -53,4 +53,51 @@ class Queries:
           cur.close()
           return 1
     
+    def lookupMovie(self, budget, genre, original_language, title, release_date, revenue, runtime, id):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT * FROM Movies 
+        WHERE budget=%s AND genre=%s AND original_language=%s AND title=%s AND release_date=%s AND revenue=%s AND runtime=%s AND id=%s"""
+                    ,(budget, genre, original_language, title, release_date, revenue, runtime, id))
+        lst = cur.fetchall()
+        cur.close()
+        return lst
+
+    def insertRating(self, rating, m_id, u_id):
+        cur = self.connect.cursor()
+        cur.execute("INSERT INTO Ratings VALUES (%s, %s, %s)", (rating, m_id, u_id))
+        self.connect.commit()
+        cur.close()
+
+    def lookupRating(self, rating, m_id, u_id):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT * FROM Ratings WHERE rating=%s AND m_id=%s AND u_id=%s""",(rating, m_id, u_id))
+        lst = cur.fetchall()
+        cur.close()
+        return lst
+
+    def deleteRating(self, rating, m_id, u_id):
+        cur = self.connect.cursor()
+        cur.execute("""DELETE FROM Ratings WHERE rating=%s AND m_id=%s AND u_id=%s""",(rating, m_id, u_id))
+        self.connect.commit()
+        cur.close()
+
+    def insertFavorite(self, u_id, m_id):
+        cur = self.connect.cursor()
+        cur.execute("INSERT INTO Favorites VALUES (%s, %s)", (u_id, m_id))
+        self.connect.commit()
+        cur.close()    
+
+    def lookupFavorites(self, u_id):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT * FROM Movies WHERE 
+        Movie.ID = (SELECT M_id FROM Favorites WHERE u_id=%s)""", (u_id))
+        lst = cur.fetchall()
+        cur.close()
+        return lst
+
+    def deleteFavorite(self, u_id, m_id):
+        cur = self.connect.cursor()
+        cur.execute("""DELETE FROM Favorites WHERE u_id=%s AND m_id=%s""",(u_id, m_id))
+        self.connect.commit()
+        cur.close()
 
