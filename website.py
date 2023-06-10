@@ -7,10 +7,8 @@ query = queries.Queries()
 app = Flask(__name__)
 app.secret_key = 'imdb'
 
-@app.route('/', methods=['GET','POST'])
-@app.route("/home", methods=['GET', 'POST']) 
-def homepage():
-    lst = query.newestMovies()
+
+def getGenres(lst):
     for x in range(len(lst)):
         g = list(lst[x])
         gval = ''
@@ -22,9 +20,18 @@ def homepage():
                 break
             gval += gs[start:stop] + ', '
             gs = gs[stop+4:]
-        g[1] = gval
+        g[1] = gval[:-2]
         lst[x] = tuple(g)
-    print(lst[3][1])
+    return lst
+
+
+
+
+@app.route('/', methods=['GET','POST'])
+@app.route("/home", methods=['GET', 'POST']) 
+def homepage():
+    lst = query.newestMovies()
+    lst = getGenres(lst)
     if 'ID' in session:
         id = session['ID']
         return render_template("home.html", id=id)

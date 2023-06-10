@@ -27,6 +27,7 @@ class Queries:
         data.drop('title', inplace=True, axis=1)
         data.to_csv('moviedata_cleaned', sep=';', index_label='id')
 
+
     def ResetDB(self):
         cur = self.connect.cursor()
         cur.execute(open('Schemas.sql', 'r').read())
