@@ -16,5 +16,9 @@ Navigating the application:
 - It's optional wether you want to login or not, although you should be aware that some features are only available when logged in. 
 
 - You can login by either creating a new user or using the following:
+
+
 username: user1 
+
+
 password: user1password
