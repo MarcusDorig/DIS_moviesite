@@ -1,5 +1,4 @@
-# DIS_moviesite
-Movie database
+# Movie database
 
 Running the project:
 
