@@ -143,7 +143,6 @@ def search():
             fav = request.form.get('AddFavorite')
             if fav != None:
                 query.insertFavorite(id, fav)
-            print(movSelect)
             if movSelect != None:
                 session['M'] = movSelect
                 return redirect(url_for('moviedisplay'))
@@ -167,10 +166,35 @@ def search():
                 lst = query.searchMovies(ts, rs, gs)
                 lst = getGenres(lst)
                 return render_template('search.html', lst=lst, id=id)
-            render_template('search.html', id=id)
+            return render_template('search.html', id=id)
         else:
-            render_template('search.html', id=id)
-        return render_template('search.html', id=id)
+            return render_template('search.html', id=id)
+    else:
+        if request.method == 'POST':
+            movSelect = request.form.get('goMovie')
+            if movSelect != None:
+                session['M'] = movSelect
+                return redirect(url_for('moviedisplay'))
+        ts = request.form.get('Titlesearch')
+        rs = request.form.getlist('rating')
+        gs = request.form.getlist('genre')
+        if ts != None:
+            if len(ts) == 0:
+                ts = ''
+            else:
+                ts = '%'+ts+'%'
+            if len(rs) == 0:
+                rs = [8]
+            if len(gs) == 0:
+                gs = '2'
+            else:
+                ngs = '%'
+                for x in range(len(gs)):
+                    ngs += gs[x]+'%'
+                gs = ngs
+            lst = query.searchMovies(ts, rs, gs)
+            lst = getGenres(lst)
+            return render_template('search.html', lst=lst)
 
 
 @app.route('/moviedisplay', methods=['GET','POST'])
@@ -178,6 +202,8 @@ def moviedisplay():
     if 'M' in session:
         movie = query.lookupMovie(session['M'])
         movie = getGenresingle(movie)
+        avgrating = query.getAvgRating(movie[0])
+        ratings = query.getMovieRatings(movie[0])
         if 'ID' in session:
             id = session['ID']
             if request.method == 'POST':
