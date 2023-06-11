@@ -195,6 +195,7 @@ def search():
             lst = query.searchMovies(ts, rs, gs)
             lst = getGenres(lst)
             return render_template('search.html', lst=lst)
+        return render_template('search.html')
 
 
 @app.route('/moviedisplay', methods=['GET','POST'])
