@@ -5,7 +5,7 @@
 <html>
   <style>
     table, th, td{
-      width: 25%;
+      width: 30%;
       border: 2px solid;
       border-collapse: collapse;
     }
@@ -22,6 +22,15 @@
       padding-top: 20%;
     }
 
+    .usertable{
+      width: 80%;
+      border: 2px solid;
+      border-collapse: collapse;
+    }
+
+    input[type=text]{
+      margin: 5px 5px;
+    }
 
   </style>
 
@@ -31,11 +40,69 @@
 
 
 {% if id %}
-  <h1>Favorite list</h1>
+  <form action="" method="post">
+    <label for="favesearch"> Search favorites by title</label>
+    <input type="text" name="favesearch">
+    <input type="submit" value="Search" name="favoritesearch">
+  </form>
+  <form action="" method="post">
+    <label for="ratesearch">Search rated films by title</label>
+    <input type="text" name="ratesearch">
+    <input type="submit" value="Search" name="ratedsearch">
+  </form>
 
-  <h2>New movies</h2>
+  <table class="usertable">
+    <tr>
+      <th> New releases</th>
+      <th> Favorite list</th>
+      <th> Your rated films</th>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          {% for id,genres,date,title in newm %}
+            <tr>
+              <td>
+                <form action="" method="post">
+                    <button style="cursor: pointer; width: 100%;" type="submit" name="newmovie" value={{id}}>
+                      {{ title }} <br /> Release date: {{date}} <br /> {{genres}}
+                    </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </td>
+      <td>
+        <table>
+          {% for mid,ftitle in favm%}
+          <tr>
+            <td>
+              <form action="" method="post">
+                <button style="cursor: pointer; width: 100%;" type="submit" name="favmovie" value={{mid}}>{{ ftitle }}</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td>
+      <td>
+        <table>
+          {% for rid,rtitle in ratedm%}
+          <tr>
+            <td>
+              <form action="" method="post">
+                <button style="cursor: pointer; width: 100%;" type="submit" name="favmovie" value={{rid}}>{{ rtitle }}</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td>
+    </tr>
 
-  <h3>Highest rated movies</h3>
+
+  </table>
 
 {%else%}
 
@@ -45,12 +112,12 @@
         New releases
       </th>
     </tr>
-    {% for title, genres, date in newm %}
+    {% for id,genres,date,title in newm %}
     <tr>
       <td>
         <form action="" method="post">
-            <button style="cursor: pointer; width: 100%;" type="submit" name="newmovie" value={{TID}}>
-              {{ title }}  <br /> {{genres}}
+            <button style="cursor: pointer; width: 100%;" type="submit" name="newmovie" value={{id}}>
+              {{ title }} <br /> Release date: {{date}} <br /> {{genres}}
             </button>
         </form>
       </td>

@@ -1,10 +1,50 @@
-{% extends layout.html %}
+{% extends 'layout.html' %}
 
 {% block content %}
-<h2>Favorite lists</h2>
 
-<h2>Watchlist</h2>
+<html>
+  <head>
+    <style>
+      input[type='submit']{
+        background-color: red;
+        height: 30px;
+      }
+      
+      input[type='submit']:hover{
+        color: white;
+        height: 30px;
+      }
 
-<h2>Movies you have rated</h2>
 
+      input[type='text']{
+        width: 15%;
+        height: 30px;
+        
+      }
+  
+      .profile{
+        padding: 20px;
+      }
+  
+  
+    </style>
+  </head>
+  
+<body>
+  
+
+<div class="profile">
+  <form action="" method="post">
+    <label for="del"> Write password</label>
+    <input type="text" name="del">
+    <input type="submit" name="Delete user" id="delete user" value="Delete user">
+  </form>
+</div>
+
+{% if a %}
+      <script> alert("Password is incorrect") </script>
+{% endif %}
+
+</body>
+</html>
 {% endblock content%}

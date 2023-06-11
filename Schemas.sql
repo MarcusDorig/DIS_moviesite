@@ -15,10 +15,10 @@ CREATE TABLE Movies(
   Budget BIGINT,
   Genre TEXT,
   original_language TEXT,
-  Title VARCHAR(255),
   release_date DATE,
   Revenue BIGINT,
   Runtime FLOAT,
+  Title VARCHAR(255),
   PRIMARY KEY(ID)
 );
 

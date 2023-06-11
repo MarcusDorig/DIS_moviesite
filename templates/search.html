@@ -1,0 +1,155 @@
+{% extends 'layout.html'%}
+
+{% block content%}
+
+<html>
+  <head>
+    <style>
+
+      .rating{
+        display: inline-block;
+        margin-inline-start: 15%;
+        margin-inline-end: 5%;
+      }
+
+      .genres{
+        display: inline-block;
+        margin-inline-start: 10%;
+        margin-inline-end: 5%;
+        margin-top: 5%;
+      }
+
+      .title{
+        margin-left: 20%;
+        margin-top: 50px;
+      }
+
+      table th td{
+        border-collapse: collapse;
+      }
+
+      table{
+        width: 80%;
+        border: none;
+        margin-block-start: 3%;
+        margin-left: 7%;
+      }
+
+      th{
+        background-color: rgb(70, 178, 7);
+        color: white;
+        border: 1px solid white;
+      }
+
+      input[type='submit']{
+        width: 50%;
+        height: 30px;
+        margin-left: 20%;
+        margin-top: 40px;
+      }
+
+      input[type='checkbox']{
+        margin-left: 10px;
+      }
+
+      input[type='submit']:hover{
+        background-color: rgb(119, 207, 68);
+        border: 1px solid;
+        border-radius: 2px;
+      }
+
+      input[type='text']{
+        width: 30%;
+        height: 25px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <form action="" method="post">
+      <div class="title">
+        <label for="Titlesearch">Search by title</label><br>
+        <input type="text" name="Titlesearch">
+      </div>
+      <div class="rating">
+        <input type="checkbox" name="rating" id="rating1" value="1">
+        <label for="rating1">1 star</label>
+        <input type="checkbox" name="rating" id="rating2" value="2">
+        <label for="rating2">2 stars</label>
+        <input type="checkbox" name="rating" id="rating3" value="3">
+        <label for="rating3">3 stars</label>
+        <input type="checkbox" name="rating" id="rating4" value="4">
+        <label for="rating4">4 stars</label>
+        <input type="checkbox" name="rating" id="rating5" value="5">
+        <label for="rating5">5 stars</label>
+      </div>
+      <div class="genres">
+        <input type="checkbox" name="genre" value="Romance">
+        <label for="Romance">Romance</label>
+        <input type="checkbox" name="genre" value="Science Fiction">
+        <label for="Science">Science Fiction</label><br>
+        <input type="checkbox" name="genre" value="Comedy">
+        <label for="Comedy">Comedy</label>
+        <input type="checkbox" name="genre" value="Adventure">
+        <label for="Adventure">Adventure</label><br>
+        <input type="checkbox" name="genre" value="Fantasy">
+        <label for="Fantasy">Fantasy</label>
+        <input type="checkbox" name="genre" value="Drama">
+        <label for="Drama">Drama</label><br>
+        <input type="checkbox" name="genre" value="Thriller">
+        <label for="Thriller">Thriller</label>
+        <input type="checkbox" name="genre" value="Horror">
+        <label for="Horror">Horror</label><br>
+        <input type="checkbox" name="genre" value="Music">
+        <label for="Music">Music</label>
+        <input type="checkbox" name="genre" value="Family">
+        <label for="Family">Family</label><br>
+        <input type="checkbox" name="genre" value="Mystery">
+        <label for="Mystery">Mystery</label>
+        <input type="checkbox" name="genre" value="Action">
+        <label for="Action">Action</label><br>
+        <input type="checkbox" name="genre" value="Crime">
+        <label for="Crime">Crime</label>
+        <input type="checkbox" name="genre" value="Documentary">
+        <label for="Documentary">Documentary</label><br>
+    </div>
+    <div>
+      <input type="submit" name="submitSearch" value="Search Movies">
+    </div>
+    </form>
+
+
+    <table>
+      <tr>
+        <th style="width: 90%;">Movies matching search</th>
+        <th>
+          <p>Add to favorites</p>
+        </th>
+      </tr>
+      {% if lst %}
+      {% for id,genre,title,rating in lst %}
+      <tr>
+        <td>
+          <form action="" method="post">
+            <button style="cursor: pointer; width: 100%;" type="submit" name="goMovie" value={{id}}>
+              {{ title }} <br /> Rating: {{rating}} <br /> {{genres}}
+            </button>
+        </form>
+        </td>
+        <td>
+          <form action="" method="post">
+            <button style="cursor: pointer; width: 100%;" type="submit" name="AddFavorite" value={{id}}>
+              Add to <br> favorites</button>
+        </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    </table>
+
+  </body>
+
+</html>
+{% endblock content %}
