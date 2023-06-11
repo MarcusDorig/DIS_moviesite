@@ -44,7 +44,8 @@ def homepage():
             fs = request.form.get('favesearch')
             rs = request.form.get('ratesearch')
             if m_id != None:
-                return redirect(url_for('displayMovie'))
+                session['m'] = m_id
+                return redirect(url_for('moviedisplay'))
             if fs != None:
                 search = '%' + fs + '%'
                 lst2 = query.NsearchFav(search)
@@ -60,7 +61,8 @@ def homepage():
     else:
         if request.method == 'POST':
             m_id = request.form.get('newmovie')
-            return render_template("displaymovie.html", m_id=m_id)
+            session['M'] = m_id
+            return redirect(url_for('moviedisplay'))
         return render_template("home.html", newm=lst)
 
 
@@ -132,13 +134,20 @@ def search():
         if len(ts) == 0:
             ts = ''
         if len(rs) == 0:
-            rs = ()
+            rs = ('star')
         if len(gs) == 0:
-            gs = ()
+            gs = (2)
         lst = query.searchMovies(ts, rs, gs)
         return render_template('search.html', lst=lst)
     return render_template('search.html')
 
+
+@app.route('/moviedisplay')
+def moviedisplay():
+    if 'M' in session:
+        movie = query.lookupMovie(session['M'])
+        print(movie)
+        return render_template('moviedisplay.html', movie=movie)
 
 
 app.run(debug=True)

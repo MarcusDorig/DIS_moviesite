@@ -71,20 +71,20 @@ class Queries:
     def lookupMovie(self, id):
         cur = self.connect.cursor()
         cur.execute("""SELECT * FROM Movies WHERE ID=%s""",(id,))
-        lst = cur.fetchall()
+        lst = cur.fetchone()
         cur.close()
         return lst
     
 
     def searchMovies(self, ts, rs, gs):
-        
-       
+        rs = tuple(rs)
+        gs = tuple(gs)
         cur = self.connect.cursor()
         cur.execute("""SELECT DISTINCT Movies.ID,Movies.Genre,Movies.Title,AVG(Ratings.Rating) FROM Movies
         INNER JOIN Ratings ON Movies.ID=Ratings.M_id
         WHERE (%(title)s='' OR Movies.Title LIKE %(title)s)
-        AND (%(rated)s IN () OR ROUND(AVG(Ratings.Rating)) IN %(rated)s)
-        AND (%(gen)s IN () OR Movies.Genre LIKE ALL %(gen)s)""",{'title':ts, 'rated': rs, 'gen':gs})
+        AND (%(rated)s IN ('star') OR ROUND(AVG(Ratings.Rating)) IN %(rated)s)
+        AND (%(gen)s IN (2) OR Movies.Genre LIKE ALL %(gen)s)""",{'title':ts, 'rated': rs, 'gen':gs})
         lst = cur.fetchall()
         cur.close()
         return lst
