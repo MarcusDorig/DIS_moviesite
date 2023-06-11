@@ -1,1 +1,58 @@
 {% extends layput.html %}
+{% block content %}
+<html>
+  <head>
+  <style>
+    .movie{
+      /* indsæt style: lige nu er det bare taget fra .login*/
+      width: 50%;
+      border-radius: 5px;
+      background-color: gainsboro;
+      padding: 20px;
+      margin-top: 10%;
+      margin-left: 20%;
+    }
+
+    .ratings{
+      /* indsæt style: lige nu er det bare taget fra .login*/
+      width: 50%;
+      border-radius: 5px;
+      background-color: gainsboro;
+      padding: 20px;
+      margin-top: 10%;
+      margin-left: 20%;
+    }
+  </style>
+  </head>
+  <body>
+    <div class="movie">
+        <h1>Movie Information</h1>
+        <p>Title: {{ movie.Title }}</p>
+        <p>Genre: {{ movie.Genre }}</p>
+        <p>Release Date: {{ movie.release_date }}</p>
+        <p>Original Language: {{ movie.original_language }}</p>
+        <p>Budget: {{ movie.Budget }}</p>
+        <p>Revenue: {{ movie.Revenue }}</p>
+        <p>Runtime: {{ movie.Runtime }}</p>
+    </div>
+
+    <div class="ratings">
+        <h2>Average Ratings</h2>
+        <!-- indsæt average rating -->
+    </div>
+
+    <div class="rating">
+    <h2>Give Rating</h2>
+        <form action = "" method = "POST">
+        <label for="rating"> Rating (0-5)</label>
+        <input type="number" name="rating" min="0" max="5" step="1" required/>
+        <input type="submit" >Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Skal der være script?!
+    </script>
+</body>
+</html>
+{% endblock content %}
