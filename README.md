@@ -18,7 +18,7 @@ Navigating the application:
 - You can login by either creating a new user or using the following:
 
 
-username: user1 
+  username: user1 
 
 
-password: user1password
+  password: user1password
