@@ -7,6 +7,7 @@ Running the project:
 - In the queries.py-file, insert the correct database name, user, host and password
 
 - Run the web-application
+  
   $ python website.py
 
 
