@@ -1,5 +1,5 @@
 import queries
 
-query = queries.Queries
+query = queries.Queries()
 
 query.ResetDB()

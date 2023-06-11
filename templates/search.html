@@ -114,6 +114,8 @@
         <label for="Crime">Crime</label>
         <input type="checkbox" name="genre" value="Documentary">
         <label for="Documentary">Documentary</label><br>
+        <input type="checkbox" name="genre" value="Animation">
+        <label for="Animation">Animation</label>
     </div>
     <div>
       <input type="submit" name="submitSearch" value="Search Movies">
@@ -129,12 +131,12 @@
         </th>
       </tr>
       {% if lst %}
-      {% for id,genre,title,rating in lst %}
+      {% for id,genre,title in lst %}
       <tr>
         <td>
           <form action="" method="post">
             <button style="cursor: pointer; width: 100%;" type="submit" name="goMovie" value={{id}}>
-              {{ title }} <br /> Rating: {{rating}} <br /> {{genres}}
+              {{ title }} <br /> {{genre}}
             </button>
         </form>
         </td>

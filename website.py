@@ -27,6 +27,21 @@ def getGenres(lst):
         lst[x] = tuple(g)
     return lst
 
+def getGenresingle(gen):
+    g = list(gen)
+    gval = ''
+    gs = g[2]
+    while 1:
+        start = gs.find(': ""')+4
+        stop = gs.find('""}')
+        if stop==-1:
+            break
+        gval += gs[start:stop] + ', '
+        gs = gs[stop+4:]
+    g[2] = gval[:-2]
+    gen = tuple(g)
+    return gen
+
 
 
 
@@ -44,7 +59,7 @@ def homepage():
             fs = request.form.get('favesearch')
             rs = request.form.get('ratesearch')
             if m_id != None:
-                session['m'] = m_id
+                session['M'] = m_id
                 return redirect(url_for('moviedisplay'))
             if fs != None:
                 search = '%' + fs + '%'
@@ -114,42 +129,81 @@ def profile():
             return render_template('profile.html', a=1, id=id)
         else:
             session.pop('ID', None)
-            query.deleteUser()
-            redirect(url_for('homepage'))
-            return
+            query.deleteUser(id, inp)
+            return redirect(url_for('homepage'))
     return render_template('profile.html', id=id)
 
 
 @app.route('/search', methods=['GET','POST'])
 def search():
-    if request.method == 'POST':
-        if 'ID' in session:
-            id = session['ID']
+    if 'ID' in session:
+        id = session['ID']
+        if request.method == 'POST':
+            movSelect = request.form.get('goMovie')
             fav = request.form.get('AddFavorite')
             if fav != None:
                 query.insertFavorite(id, fav)
-        ts = request.form.get('Titlesearch')
-        rs = request.form.getlist('rating')
-        gs = request.form.getlist('genre')
-        if len(ts) == 0:
-            ts = ''
-        if len(rs) == 0:
-            rs = ('star')
-        if len(gs) == 0:
-            gs = (2)
-        lst = query.searchMovies(ts, rs, gs)
-        return render_template('search.html', lst=lst)
-    return render_template('search.html')
+            print(movSelect)
+            if movSelect != None:
+                session['M'] = movSelect
+                return redirect(url_for('moviedisplay'))
+            ts = request.form.get('Titlesearch')
+            rs = request.form.getlist('rating')
+            gs = request.form.getlist('genre')
+            if ts != None:
+                if len(ts) == 0:
+                    ts = ''
+                else:
+                    ts = '%'+ts+'%'
+                if len(rs) == 0:
+                    rs = [8]
+                if len(gs) == 0:
+                    gs = '2'
+                else:
+                    ngs = '%'
+                    for x in range(len(gs)):
+                        ngs += gs[x]+'%'
+                    gs = ngs
+                lst = query.searchMovies(ts, rs, gs)
+                lst = getGenres(lst)
+                return render_template('search.html', lst=lst, id=id)
+            render_template('search.html', id=id)
+        else:
+            render_template('search.html', id=id)
+        return render_template('search.html', id=id)
 
 
-@app.route('/moviedisplay')
+@app.route('/moviedisplay', methods=['GET','POST'])
 def moviedisplay():
     if 'M' in session:
         movie = query.lookupMovie(session['M'])
-        print(movie)
-        return render_template('moviedisplay.html', movie=movie)
+        movie = getGenresingle(movie)
+        if 'ID' in session:
+            id = session['ID']
+            if request.method == 'POST':
+                rate = request.form.get('rate')
+                add = request.form.get('addF')
+                rem = request.form.get('remF')
+                if rate != None:
+                    query.insertRating(rate, movie[0], id)
+                if add != None:
+                    query.insertFavorite(id, movie[0])
+                if rem != None:
+                    query.deleteFavorite(id, movie[0])
+            isfavorite = query.checkFavorite(id, movie[0])
+            avgrating = query.getAvgRating(movie[0])
+            ratings = query.getMovieRatings(movie[0])
+            if isfavorite != None:
+                return render_template('moviedisplay.html', movie=movie, avgR=avgrating[0], R=ratings, id=id, F=isfavorite)
+            else:
+                return render_template('moviedisplay.html', movie=movie, avgR=avgrating[0], R=ratings, id=id)
+        return render_template('moviedisplay.html', movie=movie, avgR=avgrating[0], R=ratings)
+    else:
+        #Should never happen
+        return render_template('moviedisplay.html')
+
+
 
 
 app.run(debug=True)
-# query.ResetDB()
-# query.clean_data()
+

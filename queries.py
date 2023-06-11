@@ -1,31 +1,10 @@
 import psycopg2
-import csv
-import numpy as np
-import pandas as pd
 
 
 class Queries:
     # On initialisation we connect once to the DB
     def __init__(self):
         self.connect = psycopg2.connect("dbname='moviedb' user='postgres' host='localhost' password='Yvk89wkd'")
-
-    # def clean_data(self):
-    #     data = pd.read_csv(open("C:/Users/marcu/OneDrive/Dokumenter/Datalogi/DIS/moviedata2/tmdb_5000_movies.csv", encoding='utf8'), 
-    #                            delimiter=',')
-    #     data.drop('homepage', inplace=True, axis=1)
-    #     data.drop('id', inplace=True, axis=1)
-    #     data.drop('keywords', inplace=True, axis=1)
-    #     data.drop('overview', inplace=True, axis=1)
-    #     data.drop('popularity', inplace=True, axis=1)
-    #     data.drop('production_companies', inplace=True, axis=1)
-    #     data.drop('production_countries', inplace=True, axis=1)
-    #     data.drop('spoken_languages', inplace=True, axis=1)
-    #     data.drop('status', inplace=True, axis=1)
-    #     data.drop('tagline', inplace=True, axis=1)
-    #     data.drop('vote_average', inplace=True, axis=1)
-    #     data.drop('vote_count', inplace=True, axis=1)
-    #     data.drop('original_title', inplace=True, axis=1)
-    #     data.to_csv('moviedata_cleaned', sep=';', index_label='id')
 
 
     def ResetDB(self):
@@ -36,6 +15,8 @@ class Queries:
         with open('moviedata_cleaned', 'r') as f:
             next(f)
             cur2.copy_from(f, 'movies', sep=';')
+        self.connect.commit()
+        cur2.execute(open('users.sql','r').read())
         self.connect.commit()
         cur2.close()
 
@@ -77,17 +58,16 @@ class Queries:
     
 
     def searchMovies(self, ts, rs, gs):
-        rs = tuple(rs)
-        gs = tuple(gs)
         cur = self.connect.cursor()
-        cur.execute("""SELECT DISTINCT Movies.ID,Movies.Genre,Movies.Title,AVG(Ratings.Rating) FROM Movies
-        INNER JOIN Ratings ON Movies.ID=Ratings.M_id
+        cur.execute("""SELECT Movies.ID,Movies.Genre,Movies.Title FROM Movies
         WHERE (%(title)s='' OR Movies.Title LIKE %(title)s)
-        AND (%(rated)s IN ('star') OR ROUND(AVG(Ratings.Rating)) IN %(rated)s)
-        AND (%(gen)s IN (2) OR Movies.Genre LIKE ALL %(gen)s)""",{'title':ts, 'rated': rs, 'gen':gs})
+        AND (%(gen)s LIKE '2' OR Movies.Genre LIKE %(gen)s)
+        AND ( 8 IN %(rated)s OR Movies.ID IN (SELECT M_id FROM Ratings GROUP BY M_id HAVING ROUND(AVG(Rating),0) IN %(rated)s))
+        GROUP BY Movies.ID""",{'title':ts, 'gen': gs, 'rated': tuple(rs)})
         lst = cur.fetchall()
         cur.close()
         return lst
+
 
 
 
@@ -95,16 +75,18 @@ class Queries:
         cur = self.connect.cursor()
         cur.execute("""SELECT * FROM Ratings WHERE U_id=%s AND M_id=%s""",(u_id, m_id))
         lst = cur.fetchone()
-        if len(lst) == 0:
+        if lst == None:
             cur.execute("INSERT INTO Ratings VALUES (%s, %s, %s)", (rating, m_id, u_id))
             self.connect.commit()
             cur.close()
             return
         else:
-            cur.execute("""UPDATE Ratings SET Ratings.Rating=%s
+            cur.execute("""UPDATE Ratings SET Rating=%s
             WHERE U_id=%s AND M_id=%s""",(rating, u_id, m_id))
 
 
+    # While not being able to implement this, having the personal rated and favorite
+    # lists as views makes more complicated searching and filtering simpler to query
     def ratedMovies(self, u_id):
         cur = self.connect.cursor()
         cur.execute("""CREATE OR REPLACE VIEW Userrated AS
@@ -134,7 +116,7 @@ class Queries:
         cur = self.connect.cursor()
         cur.execute("SELECT * FROM Favorites WHERE ID=%s AND M_id=%s", (u_id, m_id))
         lst = cur.fetchone()
-        if len(lst) > 0:
+        if lst != None:
             cur.close()
             return
         else:
@@ -142,13 +124,19 @@ class Queries:
             self.connect.commit()
         cur.close()
         return 
+    
+    def checkFavorite(self, u_id, m_id):
+        cur = self.connect.cursor()
+        cur.execute("SELECT * FROM Favorites WHERE ID=%s AND M_id=%s", (u_id, m_id))
+        lst = cur.fetchone()
+        return lst
 
 
     def getFavList(self, u_id):
         cur = self.connect.cursor()
         cur.execute("""CREATE OR REPLACE VIEW UserFav AS
-                    SELECT Movies.ID,Title FROM Movies 
-                    INNER JOIN FAVORITES ON Movies.ID=(SELECT M_id FROM Favorites WHERE ID=%s);
+                    SELECT DISTINCT Movies.ID,Title FROM Movies 
+                    INNER JOIN FAVORITES ON Movies.ID IN (SELECT M_id FROM Favorites WHERE ID=%s);
                     SELECT * FROM UserFav""", (u_id,))
         lst = cur.fetchall()
         cur.close()
@@ -164,7 +152,7 @@ class Queries:
 
     def deleteFavorite(self, u_id, m_id):
         cur = self.connect.cursor()
-        cur.execute("DELETE FROM Favorites WHERE u_id=%s AND m_id=%s",(u_id, m_id))
+        cur.execute("DELETE FROM Favorites WHERE ID=%s AND m_id=%s",(u_id, m_id))
         self.connect.commit()
         cur.close()
 
@@ -174,6 +162,23 @@ class Queries:
         ORDER BY release_date DESC
         FETCH FIRST 10 ROWS ONLY""")
         lst = cur.fetchall()
+        cur.close()
+        return lst
+    
+    def getMovieRatings(self, movie):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT Ratings.Rating, U_id FROM Ratings
+        WHERE M_id = %s""",(movie,))
+        lst = cur.fetchall()
+        cur.close()
+        return lst
+    
+
+    def getAvgRating(self, movie):
+        cur = self.connect.cursor()
+        cur.execute("""SELECT ROUND(AVG(Ratings.Rating),1) FROM Ratings
+        WHERE M_id = %s""",(movie,))
+        lst = cur.fetchone()
         cur.close()
         return lst
 
